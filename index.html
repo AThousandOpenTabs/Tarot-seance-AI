@@ -24,7 +24,10 @@ window.addEventListener('unhandledrejection', function(e){ showError(e.reason); 
 fetch('./digital-seance.jsx')
   .then(function(r){ return r.text(); })
   .then(function(code){
-    var output = Babel.transform(code, { presets: ['react'], sourceType: 'script' }).code;
+    var output = Babel.transform(code, {
+      presets: [['react', { runtime: 'classic' }]],
+      sourceType: 'script'
+    }).code;
     var script = document.createElement('script');
     script.textContent = output;
     document.body.appendChild(script);
