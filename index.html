@@ -8,16 +8,28 @@
 <body>
 <div id="root"></div>
 <script>
-window.addEventListener('error', function(e){
+function showError(err){
   document.getElementById('root').innerHTML =
     '<pre style="color:#f55;background:#000;padding:20px;white-space:pre-wrap;font-family:monospace">' +
-    'Error loading the séance:\n' + (e.error ? e.error.stack || e.error.message : e.message) +
+    'Error loading the séance:\n' + (err && (err.stack || err.message) || err) +
     '</pre>';
-});
+}
+window.addEventListener('error', function(e){ showError(e.error || e.message); });
+window.addEventListener('unhandledrejection', function(e){ showError(e.reason); });
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script type="text/babel" data-presets="react" src="./digital-seance.jsx"></script>
+<script>
+fetch('./digital-seance.jsx')
+  .then(function(r){ return r.text(); })
+  .then(function(code){
+    var output = Babel.transform(code, { presets: ['react'], sourceType: 'script' }).code;
+    var script = document.createElement('script');
+    script.textContent = output;
+    document.body.appendChild(script);
+  })
+  .catch(function(err){ throw err; });
+</script>
 </body>
 </html>
