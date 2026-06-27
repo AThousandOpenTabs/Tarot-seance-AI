@@ -2959,4 +2959,9 @@ function App(){
   );
 }
 
+const styleTag = document.createElement('style');
+styleTag.textContent = STYLES;
+document.head.appendChild(styleTag);
+document.body.classList.add('scanlines');
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
